@@ -20,11 +20,16 @@ import android.Manifest;
 public class MainActivity extends AppCompatActivity implements LocationListener{
 
     LocationManager locationManager;
+    TextView textView3;
+    String debugLog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        textView3 = findViewById(R.id.textView3);
+        debugLog = new String("");
 
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION) !=
@@ -46,21 +51,29 @@ public class MainActivity extends AppCompatActivity implements LocationListener{
         }
     }
 
+    private void logger(String log) {
+        debugLog += log;
+        textView3.setText(debugLog);
+    }
+
     private void locationStart(){
-        Log.d("debug","locationStart()");
+        Log.d("LLLL","locationStart()");
+        logger("locationStart()");
 
         // LocationManager インスタンス生成
         locationManager =
                 (LocationManager) getSystemService(LOCATION_SERVICE);
 
         if (locationManager != null && locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            Log.d("debug", "location manager Enabled");
+            Log.d("LLLL", "location manager Enabled");
+            logger("location manager Enabled");
         } else {
             // GPSを設定するように促す
             Intent settingsIntent =
                     new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             startActivity(settingsIntent);
-            Log.d("debug", "not gpsEnable, startActivity");
+            Log.d("LLLL", "not gpsEnable, startActivity");
+            logger("not gpsEnable, startActivity");
         }
 
         if (ContextCompat.checkSelfPermission(this,
@@ -69,7 +82,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener{
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
 
-            Log.d("debug", "checkSelfPermission false");
+            Log.d("LLLL", "checkSelfPermission false");
+            logger("checkSelfPermission false");
             return;
         }
 
@@ -97,7 +111,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener{
         if (requestCode == 1000) {
             // 使用が許可された
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.d("debug","checkSelfPermission true");
+                Log.d("LLLL","checkSelfPermission true");
+                logger("checkSelfPermission true");
 
                 locationStart();
 
@@ -114,13 +129,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener{
     public void onStatusChanged(String provider, int status, Bundle extras) {
         switch (status) {
             case LocationProvider.AVAILABLE:
-                Log.d("debug", "LocationProvider.AVAILABLE");
+                Log.d("LLLL", "LocationProvider.AVAILABLE");
                 break;
             case LocationProvider.OUT_OF_SERVICE:
-                Log.d("debug", "LocationProvider.OUT_OF_SERVICE");
+                Log.d("LLLL", "LocationProvider.OUT_OF_SERVICE");
                 break;
             case LocationProvider.TEMPORARILY_UNAVAILABLE:
-                Log.d("debug", "LocationProvider.TEMPORARILY_UNAVAILABLE");
+                Log.d("LLLL", "LocationProvider.TEMPORARILY_UNAVAILABLE");
                 break;
         }
     }
